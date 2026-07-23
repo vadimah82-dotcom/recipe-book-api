@@ -1,10 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
-
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.database import get_session, init_db
 from app.models import Recipe
 from app.schemas import RecipeCreate, RecipeDetail, RecipeListItem
@@ -14,7 +12,6 @@ from app.schemas import RecipeCreate, RecipeDetail, RecipeListItem
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await init_db()
     yield
-
 
 app = FastAPI(
     title="Кулинарная книга API",
@@ -26,7 +23,6 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-
 
 @app.get(
     "/recipes",
@@ -43,7 +39,6 @@ async def get_recipes(session: AsyncSession = Depends(get_session)) -> list[Reci
         select(Recipe).order_by(Recipe.views.desc(), Recipe.cook_time.asc())
     )
     return list(result.scalars().all())
-
 
 @app.get(
     "/recipes/{recipe_id}",
@@ -64,7 +59,6 @@ async def get_recipe(recipe_id: int, session: AsyncSession = Depends(get_session
     recipe.views += 1
     await session.commit()
     await session.refresh(recipe)
-
     return RecipeDetail(
         id=recipe.id,
         title=recipe.title,
@@ -72,7 +66,6 @@ async def get_recipe(recipe_id: int, session: AsyncSession = Depends(get_session
         ingredients=recipe.ingredients.split(","),
         description=recipe.description,
     )
-
 
 @app.post(
     "/recipes",
@@ -97,7 +90,6 @@ async def create_recipe(
     session.add(recipe)
     await session.commit()
     await session.refresh(recipe)
-
     return RecipeDetail(
         id=recipe.id,
         title=recipe.title,
