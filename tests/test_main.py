@@ -6,7 +6,6 @@ async def test_get_recipes_empty(client: AsyncClient) -> None:
     assert response.status_code == 200
     assert response.json() == []
 
-
 async def test_create_recipe(client: AsyncClient) -> None:
     payload = {
         "title": "Омлет",
@@ -21,7 +20,6 @@ async def test_create_recipe(client: AsyncClient) -> None:
     assert data["title"] == payload["title"]
     assert data["ingredients"] == payload["ingredients"]
     assert "id" in data
-
 
 async def test_get_recipe_detail_increments_views(client: AsyncClient) -> None:
     create_response = await client.post(
@@ -73,14 +71,10 @@ async def test_recipes_sorted_by_views_then_cook_time(client: AsyncClient) -> No
 
     slow_id = slow.json()["id"]
     fast_id = fast.json()["id"]
-
-    # у обоих рецептов по 0 просмотров -> сортировка по cook_time (по возрастанию)
     response = await client.get("/recipes")
     data = response.json()
     assert data[0]["id"] == fast_id
     assert data[1]["id"] == slow_id
-
-    # добавляем "долгому" рецепту просмотр -> он должен стать первым
     await client.get(f"/recipes/{slow_id}")
 
     response = await client.get("/recipes")
