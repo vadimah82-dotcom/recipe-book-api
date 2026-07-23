@@ -48,7 +48,6 @@ async def test_get_recipe_not_found(client: AsyncClient) -> None:
     response = await client.get("/recipes/999")
     assert response.status_code == 404
 
-
 async def test_recipes_sorted_by_views_then_cook_time(client: AsyncClient) -> None:
     slow = await client.post(
         "/recipes",
@@ -76,7 +75,6 @@ async def test_recipes_sorted_by_views_then_cook_time(client: AsyncClient) -> No
     assert data[0]["id"] == fast_id
     assert data[1]["id"] == slow_id
     await client.get(f"/recipes/{slow_id}")
-
     response = await client.get("/recipes")
     data = response.json()
     assert data[0]["id"] == slow_id
