@@ -15,7 +15,6 @@ async def test_create_recipe(client: AsyncClient) -> None:
     }
     response = await client.post("/recipes", json=payload)
     assert response.status_code == 201
-
     data = response.json()
     assert data["title"] == payload["title"]
     assert data["ingredients"] == payload["ingredients"]
@@ -32,17 +31,13 @@ async def test_get_recipe_detail_increments_views(client: AsyncClient) -> None:
         },
     )
     recipe_id = create_response.json()["id"]
-
     first_view = await client.get(f"/recipes/{recipe_id}")
     assert first_view.status_code == 200
-
     second_view = await client.get(f"/recipes/{recipe_id}")
     assert second_view.json()["ingredients"] == ["огурцы", "помидоры"]
-
     list_response = await client.get("/recipes")
     recipe_in_list = next(r for r in list_response.json() if r["id"] == recipe_id)
     assert recipe_in_list["views"] == 2
-
 
 async def test_get_recipe_not_found(client: AsyncClient) -> None:
     response = await client.get("/recipes/999")
