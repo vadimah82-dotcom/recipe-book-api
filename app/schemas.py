@@ -3,7 +3,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class RecipeListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     id: int
     title: str = Field(..., description="Название блюда")
     views: int = Field(..., description="Количество просмотров детального рецепта")
@@ -12,7 +11,6 @@ class RecipeListItem(BaseModel):
 
 class RecipeDetail(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     id: int
     title: str = Field(..., description="Название блюда")
     cook_time: int = Field(..., description="Время приготовления в минутах")

@@ -64,7 +64,6 @@ async def get_recipe(recipe_id: int, session: AsyncSession = Depends(get_session
     recipe.views += 1
     await session.commit()
     await session.refresh(recipe)
-
     return RecipeDetail(
         id=recipe.id,
         title=recipe.title,
@@ -97,7 +96,6 @@ async def create_recipe(
     session.add(recipe)
     await session.commit()
     await session.refresh(recipe)
-
     return RecipeDetail(
         id=recipe.id,
         title=recipe.title,
